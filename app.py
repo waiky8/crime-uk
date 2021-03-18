@@ -41,7 +41,7 @@ df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
 pcode_files = glob.glob(os.path.join("*new*.csv"))
 df_pcode = pd.concat((pd.read_csv(f, dtype="str") for f in pcode_files))
 
-mapbox_access_token = "ENTER YOUR TOKEN HERE"
+mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
 
 '''
 ======================
@@ -289,7 +289,12 @@ app.layout = html.Div(
                                     "column_id": "Row"
                                 },
                                 "width": "5px"
-                            }
+                            },
+                            {"if": {"column_id": "MSOA"}, "textAlign": "left"},
+                            {"if": {"column_id": "Falls within"}, "textAlign": "left"},
+                            {"if": {"column_id": "Crime type"}, "textAlign": "left"},
+                            {"if": {"column_id": "Location"}, "textAlign": "left"},
+                            {"if": {"column_id": "Last outcome category"}, "textAlign": "left"}
                         ],
 
                         style_data={
@@ -465,7 +470,7 @@ def return_map(selected_area, selected_crime_type):
             mode="markers",
             marker={"color": df1["COLOUR"], "size": 14},
             name="Crime Type",
-            text=df1["MSOA"],
+            text=df1["Location"],
             customdata=df1["Crime type"],
             hovertemplate="%{text}<br>%{customdata}"
         )
