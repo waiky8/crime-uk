@@ -41,7 +41,7 @@ df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
 pcode_files = glob.glob(os.path.join("*new*.csv"))
 df_pcode = pd.concat((pd.read_csv(f, dtype="str") for f in pcode_files))
 
-mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
+mapbox_access_token = "Enter your token here"
 
 '''
 ======================
