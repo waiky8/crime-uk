@@ -6,6 +6,8 @@ from dash.dependencies import Input, Output, State
 import dash_table
 import pandas as pd
 import plotly.graph_objects as go
+import bs4 as bs
+import urllib.request
 import datetime
 import calendar
 import glob
@@ -38,10 +40,7 @@ READ DATA FROM GOVUK URL & POSTCODE FROM CSV FILES
 crime_files = glob.glob(os.path.join("*street*.csv"))
 df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
 
-pcode_files = glob.glob(os.path.join("*new*.csv"))
-df_pcode = pd.concat((pd.read_csv(f, dtype="str") for f in pcode_files))
-
-mapbox_access_token = "Enter your token here"
+mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
 
 '''
 ======================
@@ -191,21 +190,25 @@ app.layout = html.Div(
 
                         html.Br(),
 
-                        dcc.Input(
-                            id="postcode_inp",
-                            placeholder="Post Code Lookup",
-                            style={"font-size": fontsize, "color": "black", "background-color": "white"}
+                        html.P("Postcode/Local Area Lookup:"),
+
+                        dbc.Row(
+                            [
+                                dcc.Input(
+                                    id="postcode_inp",
+                                    className="col-4",
+                                    placeholder="Post Code",
+                                    style={"font-size": fontsize, "color": "black", "background-color": "white"}
+                                ),
+
+                                html.P(id="message", className="col-8"),
+                            ]
                         ),
 
-                        html.Br(), html.Br()
+                        html.Br()
                     ], style={"background": "ghostwhite", "border-style": "groove", "padding": "0px 30px 0px 30px"}
                 )
             ], style={"padding": "0px 20px 0px 20px"}
-        ),
-
-        html.Div(
-            html.P(id="message"),
-            style={"padding": "0px 20px 0px 20px"}
         ),
 
         html.Br(), html.Br(),
@@ -520,7 +523,7 @@ def return_datatable(ns, nb, selected_postcode):
         if neighbourhood == "":
             message = "Please enter valid full postcode"
         else:
-            message = "Local Area: " + neighbourhood
+            message = neighbourhood
 
     return message
 
@@ -533,12 +536,27 @@ MAP POSTCODE TO LOCAL AREA (MSOA)
 
 
 def get_data(pcode):
-    try:
-        area = df_pcode["Middle layer super output area"][df_pcode["Postcode"] == pcode].values[0]
+    area = ""
 
-    except Exception as e:
-        print(str(e))
-        area = ""
+    url = ("https://www.doogal.co.uk/ShowMap.php?postcode=" + pcode).replace(" ", "%20")
+
+    try:
+        source = urllib.request.urlopen(url)
+        soup = bs.BeautifulSoup(source, 'lxml')
+        tables = soup.find_all("table")
+
+        for tb in tables:
+            table_rows = tb.find_all("tr")
+
+            for tr in table_rows:
+                thd = tr.find_all(["th", "td"])
+                row = [i.text for i in thd]
+                if row[0] == "Middle layer super output area":
+                    area = row[1]
+                    break
+
+    except urllib.request.HTTPError as err:
+        print("HTTP Error: (postcode ", pcode, ")", err.code)
 
     return area
 
