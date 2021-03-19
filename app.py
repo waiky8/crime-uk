@@ -40,7 +40,7 @@ READ DATA FROM GOVUK URL & POSTCODE FROM CSV FILES
 crime_files = glob.glob(os.path.join("*street*.csv"))
 df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
 
-mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
+mapbox_access_token = "enter token here"
 
 '''
 ======================
