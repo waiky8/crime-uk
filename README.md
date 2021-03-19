@@ -13,7 +13,7 @@ Check it out at https://crime-uk.herokuapp.com/<br><br>
 - Map with markers showing the locations where the crime occurred
 - More serious crimes are coloured red / orangered
 - Compare crimes by entering multiple areas
-- Postcode lookup to assist in determining the correct local area name
+- Postcode lookup to assist in determining the correct local area name - achieved by web scraping https://www.doogal.co.uk/ using **beautifulsoup4**
 
 # Input options:
 - Select local area(s)
@@ -24,7 +24,6 @@ Check it out at https://crime-uk.herokuapp.com/<br><br>
  - **app_msoa.py** - code to add local area name (MSOA) column to input files
  - **app_colour.py** - code to add colour column to input files (used for marker colours on the map)
  - **2021-01-xxx-street.csv** - crime files by constabulary
- - **postcodes_new_*.csv** - postcode/msoa mapping<br><br>
 
 Note some data files not uploaded due to github storage limitation.
 
