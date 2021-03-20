@@ -28,6 +28,8 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO],
 server = app.server
 app.title = "Crime UK"
 
+mapbox_access_token = "enter token key here"
+
 '''
 ==================================================
 READ DATA FROM GOVUK URL & POSTCODE FROM CSV FILES
@@ -38,8 +40,6 @@ READ DATA FROM GOVUK URL & POSTCODE FROM CSV FILES
 
 crime_files = glob.glob(os.path.join("*street*.csv"))
 df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
-
-mapbox_access_token = "enter token key here"
 
 '''
 ======================
