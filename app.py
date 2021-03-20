@@ -8,7 +8,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import bs4 as bs
 import urllib.request
-import datetime
 import calendar
 import glob
 import os
@@ -40,7 +39,7 @@ READ DATA FROM GOVUK URL & POSTCODE FROM CSV FILES
 crime_files = glob.glob(os.path.join("*street*.csv"))
 df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
 
-mapbox_access_token = "enter token here"
+mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
 
 '''
 ======================
@@ -339,46 +338,9 @@ app.layout = html.Div(
 )
 
 '''
-======================
-CALLBACK FOR DATATABLE
-======================
-'''
-
-
-@app.callback(
-    Output("datatable", "data"),
-    [
-        Input("msoa_drop", "value"),
-        Input("crime_type", "value")
-    ]
-)
-def return_datatable(selected_area, selected_crime_type):
-    print(str(datetime.datetime.now()), "[1] start update_datatable...")
-
-    df1 = df.copy()
-
-    if selected_area is None or selected_area == []:
-        df1 = df1[df1["MSOA"].isin(default_area)]
-    else:
-        df1 = df1[df1["MSOA"].isin(selected_area)]
-
-    if selected_crime_type is None or selected_crime_type == []:
-        pass
-    else:
-        df1 = df1[df1["Crime type"].isin(selected_crime_type)]
-
-    df1["Row"] = df1.reset_index().index
-    df1["Row"] += 1
-
-    print(str(datetime.datetime.now()), "[1] finish update_datatable...")
-
-    return df1.to_dict("records")
-
-
-'''
-========================
-CALLBACK FOR SUMMARY BOX
-========================
+=========================================
+CALLBACK FOR SUMMARY BOX, DATATABLE & MAP
+=========================================
 '''
 
 
@@ -397,7 +359,9 @@ CALLBACK FOR SUMMARY BOX
         Output("shoplifting", "children"),
         Output("theft_person", "children"),
         Output("vehicle_crime", "children"),
-        Output("violence_sexual", "children")
+        Output("violence_sexual", "children"),
+        Output("datatable", "data"),
+        Output("crime_map", "figure")
     ],
     [
         Input("msoa_drop", "value"),
@@ -407,6 +371,11 @@ CALLBACK FOR SUMMARY BOX
 def return_summary(selected_area, selected_crime_type):
     df1 = df.copy()
 
+    '''
+    ---------
+    DATATABLE
+    ---------
+    '''
     if selected_area is None or selected_area == []:
         df1 = df1[df1["MSOA"].isin(default_area)]
     else:
@@ -417,6 +386,14 @@ def return_summary(selected_area, selected_crime_type):
     else:
         df1 = df1[df1["Crime type"].isin(selected_crime_type)]
 
+    df1["Row"] = df1.reset_index().index
+    df1["Row"] += 1
+
+    '''
+    -----------
+    SUMMARY BOX
+    -----------
+    '''
     anti_social = format(int(df1[df1["Crime type"] == "Anti-social behaviour"].shape[0]), ",d")
     bike_theft = format(int(df1[df1["Crime type"] == "Bicycle theft"].shape[0]), ",d")
     burglary = format(int(df1[df1["Crime type"] == "Burglary"].shape[0]), ",d")
@@ -432,37 +409,11 @@ def return_summary(selected_area, selected_crime_type):
     vehicle_crime = format(int(df1[df1["Crime type"] == "Vehicle crime"].shape[0]), ",d")
     violence_sexual = format(int(df1[df1["Crime type"] == "Violence and sexual offences"].shape[0]), ",d")
 
-    return anti_social, bike_theft, burglary, damage_arson, drugs, other_crime, other_theft, possession_weapons, \
-           public_order, robbery, shoplifting, theft_person, vehicle_crime, violence_sexual
-
-
-'''
-================
-CALLBACK FOR MAP
-================
-'''
-
-
-@app.callback(
-    Output("crime_map", "figure"),
-    [
-        Input("msoa_drop", "value"),
-        Input("crime_type", "value")
-    ]
-)
-def return_map(selected_area, selected_crime_type):
-    df1 = df.copy()
-
-    if selected_area is None or selected_area == []:
-        df1 = df1[df1["MSOA"].isin(default_area)]
-    else:
-        df1 = df1[df1["MSOA"].isin(selected_area)]
-
-    if selected_crime_type is None or selected_crime_type == []:
-        pass
-    else:
-        df1 = df1[df1["Crime type"].isin(selected_crime_type)]
-
+    '''
+    ----------------
+    MAP WITH MARKERS
+    ----------------
+    '''
     lat_mean = pd.to_numeric(df1["Latitude"]).mean()
     lon_mean = pd.to_numeric(df1["Longitude"]).mean()
 
@@ -495,7 +446,10 @@ def return_map(selected_area, selected_crime_type):
         margin=dict(t=0, b=0, l=0, r=0)
     )
 
-    return fig
+    return anti_social, bike_theft, burglary, damage_arson, drugs, other_crime, other_theft, possession_weapons, \
+           public_order, robbery, shoplifting, theft_person, vehicle_crime, violence_sexual, \
+           df1.to_dict("records"), \
+           fig
 
 
 '''
