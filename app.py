@@ -5,6 +5,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 import dash_table
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 import bs4 as bs
 import urllib.request
@@ -28,7 +29,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO],
 server = app.server
 app.title = "Crime UK"
 
-mapbox_access_token = "enter token key here"
+mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
 
 '''
 ==================================================
@@ -152,26 +153,6 @@ app.layout = html.Div(
         html.Br(), html.Br(),
 
         html.Div(
-            dcc.Loading(
-                dcc.Graph(
-                    id="crime_map",
-                    figure={},
-                    config={"displayModeBar": False}
-                )
-            ), style={"padding": "0px 20px 0px 20px"}
-        ),
-
-        html.Br(), html.Br(),
-
-        html.Div(
-            [
-                html.P("*Defaults to 'Bents Green & Millhouses' if local area is not selected")
-            ], style={"font-style": "italic", "padding": "0px 20px 0px 20px"}
-        ),
-
-        html.Br(), html.Br(),
-
-        html.Div(
             [
                 html.Div(
                     [
@@ -210,109 +191,24 @@ app.layout = html.Div(
             ], style={"padding": "0px 20px 0px 20px"}
         ),
 
-        html.Br(), html.Br(),
+        html.Br(),
 
         html.Div(
             [
-                dcc.Loading(
-                    dash_table.DataTable(
-                        id="datatable",
+                html.P("*Defaults to 'Bents Green & Millhouses' if local area is not selected")
+            ], style={"font-style": "italic", "padding": "0px 20px 0px 20px"}
+        ),
 
-                        columns=[
-                            {
-                                "id": "Row",
-                                "name": "Row",
-                                "type": "numeric"
-                            },
-                            {
-                                "id": "MSOA",
-                                "name": "Local Area",
-                                "type": "text"
-                            },
-                            {
-                                "id": "Falls within",
-                                "name": "Local Constabulary",
-                                "type": "text"
-                            },
-                            {
-                                "id": "Crime type",
-                                "name": "Crime Type",
-                                "type": "text"
-                            },
-                            {
-                                "id": "Location",
-                                "name": "Location",
-                                "type": "text"
-                            },
-                            {
-                                "id": "Last outcome category",
-                                "name": "Outcome",
-                                "type": "text"
-                            }
-                        ],
+        html.Br(),
 
-                        sort_action="native",
-                        sort_mode="single",
-                        filter_action="none",
-                        page_action="native",
-                        page_current=0,
-                        page_size=datatable_rows,
-                        fixed_rows={"headers": True},
-                        fixed_columns={"headers": True, "data": 2},
-
-                        style_table={
-                            "overflowX": "auto",
-                            "overflowY": "auto",
-                            "minWidth": "100%",
-                            "height": "500px"
-                        },
-
-                        style_header={
-                            "bold": True,
-                            "color": "black",
-                            "backgroundColor": "lightgrey",
-                            "whiteSpace": "normal",
-                            "height": "72px"
-                        },
-
-                        style_cell={
-                            "color": textcol,
-                            "backgroundColor": bgcol,
-                            "font-family": "Verdana",
-                            "font_size": fontsize,
-                            "minWidth": 64,
-                            "maxWidth": 160,
-                            "padding": "0px 10px 0px 10px"
-                        },
-
-                        style_cell_conditional=[
-                            {
-                                "if": {
-                                    "column_id": "Row"
-                                },
-                                "width": "5px"
-                            },
-                            {"if": {"column_id": "MSOA"}, "textAlign": "left"},
-                            {"if": {"column_id": "Falls within"}, "textAlign": "left"},
-                            {"if": {"column_id": "Crime type"}, "textAlign": "left"},
-                            {"if": {"column_id": "Location"}, "textAlign": "left"},
-                            {"if": {"column_id": "Last outcome category"}, "textAlign": "left"}
-                        ],
-
-                        style_data={
-                            "whiteSpace": "normal",
-                            "height": "auto"
-                        },
-
-                        css=[
-                            {
-                                "selector": ".row",
-                                "rule": "margin: 0; flex-wrap: nowrap"
-                            }
-                        ]
-                    )
+        html.Div(
+            dcc.Loading(
+                dcc.Graph(
+                    id="crime_map",
+                    figure={},
+                    config={"displayModeBar": False}
                 )
-            ], style={"padding": "0px 20px 0px 20px"}
+            ), style={"padding": "0px 20px 0px 20px"}
         ),
 
         html.Br(), html.Br(), html.Br(),
@@ -360,8 +256,8 @@ CALLBACK FOR SUMMARY BOX, DATATABLE & MAP
         Output("theft_person", "children"),
         Output("vehicle_crime", "children"),
         Output("violence_sexual", "children"),
-        Output("datatable", "data"),
-        Output("crime_map", "figure")
+        Output("crime_map", "figure"),
+        # Output("datatable", "data")
     ],
     [
         Input("msoa_drop", "value"),
@@ -417,16 +313,30 @@ def return_summary(selected_area, selected_crime_type):
     lat_mean = pd.to_numeric(df1["Latitude"]).mean()
     lon_mean = pd.to_numeric(df1["Longitude"]).mean()
 
+    df1.loc[(pd.isna(df1["Last outcome category"])), "Last outcome category"] = ""
+
     fig = go.Figure(
         go.Scattermapbox(
             lat=df1["Latitude"],
             lon=df1["Longitude"],
             mode="markers",
             marker={"color": df1["COLOUR"], "size": 14},
-            name="Crime Type",
+            name="",
             text=df1["Location"],
-            customdata=df1["Crime type"],
-            hovertemplate="%{text}<br>%{customdata}"
+            customdata=np.stack(
+                (
+                    df1["Falls within"],
+                    df1["MSOA"],
+                    df1["Crime type"],
+                    df1["Last outcome category"]
+                ),
+                axis=-1
+            ),
+            hovertemplate="<br><b>Police Force</b>: %{customdata[0]}" + \
+                          "<br><b>Local Area</b>: %{customdata[1]}" + \
+                          "<br><b>Location</b>: %{text}" + \
+                          "<br><b>Crime Type</b>: %{customdata[2]}" + \
+                          "<br><b>Outcome</b>: %{customdata[3]}"
         )
     )
 
@@ -443,13 +353,18 @@ def return_summary(selected_area, selected_crime_type):
             zoom=12,
             style="streets"  # satellite, outdoors, light, dark
         ),
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=12,
+            font_family="Rockwell"
+        ),
         margin=dict(t=0, b=0, l=0, r=0)
     )
 
     return anti_social, bike_theft, burglary, damage_arson, drugs, other_crime, other_theft, possession_weapons, \
            public_order, robbery, shoplifting, theft_person, vehicle_crime, violence_sexual, \
-           df1.to_dict("records"), \
-           fig
+           fig  # , \
+    # df1.to_dict("records")
 
 
 '''
