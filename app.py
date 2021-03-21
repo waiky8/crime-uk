@@ -29,7 +29,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO],
 server = app.server
 app.title = "Crime UK"
 
-mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
+mapbox_access_token = "enter token here"
 
 '''
 ==================================================
@@ -234,9 +234,9 @@ app.layout = html.Div(
 )
 
 '''
-=========================================
-CALLBACK FOR SUMMARY BOX, DATATABLE & MAP
-=========================================
+==============================
+CALLBACK FOR SUMMARY BOX & MAP
+==============================
 '''
 
 
@@ -268,9 +268,9 @@ def return_summary(selected_area, selected_crime_type):
     df1 = df.copy()
 
     '''
-    ---------
-    DATATABLE
-    ---------
+    -----------
+    SUMMARY BOX
+    -----------
     '''
     if selected_area is None or selected_area == []:
         df1 = df1[df1["MSOA"].isin(default_area)]
@@ -282,14 +282,6 @@ def return_summary(selected_area, selected_crime_type):
     else:
         df1 = df1[df1["Crime type"].isin(selected_crime_type)]
 
-    df1["Row"] = df1.reset_index().index
-    df1["Row"] += 1
-
-    '''
-    -----------
-    SUMMARY BOX
-    -----------
-    '''
     anti_social = format(int(df1[df1["Crime type"] == "Anti-social behaviour"].shape[0]), ",d")
     bike_theft = format(int(df1[df1["Crime type"] == "Bicycle theft"].shape[0]), ",d")
     burglary = format(int(df1[df1["Crime type"] == "Burglary"].shape[0]), ",d")
