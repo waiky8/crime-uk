@@ -9,8 +9,7 @@ Check it out at https://crime-uk.herokuapp.com/<br><br>
 
 # Features:
 - Summary of crime by crime type
-- Datatable with additional information, including the outcome of investigations
-- Map with markers showing the locations where the crime occurred
+- Map with markers showing the locations where the crime occurred including additional information
 - More serious crimes are coloured red / orangered
 - Compare crimes by entering multiple areas
 - Postcode lookup to assist in determining the correct local area name - achieved by web scraping https://www.doogal.co.uk/ using **beautifulsoup4**
@@ -30,4 +29,3 @@ Note some data files not uploaded due to github storage limitation.
 # Sample screenshots:
 ![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot_1.jpg)
 ![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot_2.jpg)
-![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot_3.jpg)
