@@ -29,7 +29,7 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO],
 server = app.server
 app.title = "Crime UK"
 
-mapbox_access_token = "enter token here"
+mapbox_access_token = "pk.eyJ1Ijoid2Fpa3kiLCJhIjoiY2trMWhidDhtMHJpZDJ2cGNldXZraXNhMiJ9.nR_QQ61ZVCQ2NTem0VBEXg"
 
 '''
 ==================================================
@@ -311,23 +311,24 @@ def return_summary(selected_area, selected_crime_type):
         go.Scattermapbox(
             lat=df1["Latitude"],
             lon=df1["Longitude"],
-            mode="markers",
+            mode="text+markers",
             marker={"color": df1["COLOUR"], "size": 14},
             name="",
-            text=df1["Location"],
+            text=df1["Crime type"],
+            textposition='top center',
             customdata=np.stack(
                 (
                     df1["Falls within"],
                     df1["MSOA"],
-                    df1["Crime type"],
+                    df1["Location"],
                     df1["Last outcome category"]
                 ),
                 axis=-1
             ),
             hovertemplate="<br><b>Police Force</b>: %{customdata[0]}" + \
                           "<br><b>Local Area</b>: %{customdata[1]}" + \
-                          "<br><b>Location</b>: %{text}" + \
-                          "<br><b>Crime Type</b>: %{customdata[2]}" + \
+                          "<br><b>Location</b>: %{customdata[2]}" + \
+                          "<br><b>Crime type</b>: %{text}" + \
                           "<br><b>Outcome</b>: %{customdata[3]}"
         )
     )
