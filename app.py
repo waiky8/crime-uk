@@ -9,6 +9,7 @@ import numpy as np
 import plotly.graph_objects as go
 import bs4 as bs
 import urllib.request
+from configparser import ConfigParser
 import calendar
 import glob
 import os
@@ -29,7 +30,9 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO],
 server = app.server
 app.title = "Crime UK"
 
-mapbox_access_token = "enter token here"
+config = ConfigParser()
+config.read("config.ini")
+mapbox_access_token = config["mapbox"]["secret_token"]
 
 '''
 ==================================================
