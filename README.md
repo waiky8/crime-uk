@@ -1,7 +1,7 @@
 # Crime UK
 This is a simple crime dashboard that show all reported crimes at local area level. Local area is defined as Middle Layer Super Output Areas (MSOA) that is commonly used in the UK to improve reporting of small areas. Built on **Dash** and written in **Python**, the data is sourced from PoliceUK site https://data.police.uk/data/.<br><br>
 
-**Mapbox** is used to show the crime locations that dispalys additional information when you hover over or click on the markers.<br><br>
+**Mapbox** is used to show the crime locations with markers and hover text.<br><br>
 
 Data is refreshed monthly. Note that due to the size of the files it is only possible to hold one month's worth of data.<br><br>
 The application is uploaded to **Heroku**.<br><br>
