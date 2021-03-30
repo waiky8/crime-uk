@@ -63,7 +63,6 @@ col_1 = "teal"
 col_2 = "midnightblue"
 col_3 = "mediumslateblue"
 col_4 = "slateblue"
-grid_col = "gainsboro"
 
 default_area = ["Bents Green & Millhouses"]
 
