@@ -27,5 +27,5 @@ Check it out at https://crime-uk.herokuapp.com/<br><br>
 Note some data files not uploaded due to github storage limitation.
 
 # Sample screenshots:
-![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot_1.jpg)
-![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot_2.jpg)
+![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot1.png)
+![alt text](https://github.com/waiky8/crime-uk/blob/main/screenshot2.png)
