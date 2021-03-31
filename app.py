@@ -315,13 +315,14 @@ def return_summary(selected_area, selected_crime_type):
             mode="text+markers",
             marker={"color": df1["COLOUR"], "size": 14},
             name="",
-            text=df1["Crime type"],
+            text="",
             textposition='top center',
             customdata=np.stack(
                 (
                     df1["Falls within"],
                     df1["MSOA"],
                     df1["Location"],
+                    df1["Crime type"],
                     df1["Last outcome category"]
                 ),
                 axis=-1
@@ -329,8 +330,8 @@ def return_summary(selected_area, selected_crime_type):
             hovertemplate="<br><b>Police Force</b>: %{customdata[0]}" + \
                           "<br><b>Local Area</b>: %{customdata[1]}" + \
                           "<br><b>Location</b>: %{customdata[2]}" + \
-                          "<br><b>Crime type</b>: %{text}" + \
-                          "<br><b>Outcome</b>: %{customdata[3]}"
+                          "<br><b>Crime type</b>: %{customdata[3]}" + \
+                          "<br><b>Outcome</b>: %{customdata[4]}"
         )
     )
 
