@@ -14,6 +14,8 @@ Check it out at https://crime-uk.herokuapp.com/<br><br>
 - Compare crimes by entering multiple areas
 - Postcode lookup to assist in determining the correct local area name - achieved by web scraping https://www.doogal.co.uk/ using **beautifulsoup4**
 
+Note, for multiple crime in the same location only one will be displayed. As a workaround (hack?) try adding crime type in your search.
+
 # Input options:
 - Select local area(s)
 - Select crime type(s)
