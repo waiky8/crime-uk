@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import bs4 as bs
 import urllib.request
 from configparser import ConfigParser
+import base64
 import calendar
 import glob
 import os
@@ -45,6 +46,19 @@ crime_files = glob.glob(os.path.join("*street*.csv"))
 df = pd.concat((pd.read_csv(f, dtype="str") for f in crime_files), sort=True)
 
 '''
+=================================
+READ IMAGE FILES FOR BUTTON ICONS
+=================================
+'''
+
+image_house = base64.b64encode(open("house.png", "rb").read())
+image_car = base64.b64encode(open("car.png", "rb").read())
+image_robbery = base64.b64encode(open("robbery.png", "rb").read())
+image_violence = base64.b64encode(open("violence.png", "rb").read())
+image_theft = base64.b64encode(open("theft.png", "rb").read())
+image_others = base64.b64encode(open("others.png", "rb").read())
+
+'''
 ======================
 PARAMETERS & VARIABLES
 ======================
@@ -54,15 +68,7 @@ d = df["Month"].max()
 year, m = d.split("-")
 month = calendar.month_abbr[int(m)]
 
-datatable_rows = 10  # rows per page of datatable
 fontsize = 15
-
-textcol = "dimgrey"  # text colour
-bgcol = "white"  # background colour of charts, table etc.
-col_1 = "teal"
-col_2 = "midnightblue"
-col_3 = "mediumslateblue"
-col_4 = "slateblue"
 
 default_area = ["Bents Green & Millhouses"]
 
@@ -80,75 +86,6 @@ app.layout = html.Div(
                 html.H3(str("(" + month + ", " + year + ")"))
             ],
             style={"text-align": "center", "font-weight": "bold"}
-        ),
-
-        html.Br(), html.Br(),
-
-        html.Div(
-            [
-                html.Div(
-                    [
-                        html.Br(),
-
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        dcc.Checklist(
-                                            id="crime_type",
-                                            options=[
-                                                {"label": "Anti-social Behaviour", "value": "Anti-social behaviour"},
-                                                {"label": "Bicycle Theft", "value": "Bicycle theft"},
-                                                {"label": "Burglary", "value": "Burglary"},
-                                                {"label": "Criminal Damage & Arson",
-                                                 "value": "Criminal damage and arson"},
-                                                {"label": "Drugs", "value": "Drugs"},
-                                                {"label": "Other Crime", "value": "Other crime"},
-                                                {"label": "Other Theft", "value": "Other theft"},
-                                                {"label": "Possession of Weapons", "value": "Possession of weapons"},
-                                                {"label": "Public Order", "value": "Public order"},
-                                                {"label": "Robbery", "value": "Robbery"},
-                                                {"label": "Shoplifting", "value": "Shoplifting"},
-                                                {"label": "Theft from the Person", "value": "Theft from the person"},
-                                                {"label": "Vehicle Crime", "value": "Vehicle crime"},
-                                                {"label": "Violence & Sexual Offences",
-                                                 "value": "Violence and sexual offences"},
-
-                                            ],
-                                            value=[],
-                                            labelStyle={"display": "block"},
-                                            inputStyle={"margin-right": "10px"}
-                                        )
-                                    ],
-                                    className="col-9",
-                                    style={"padding": "0px 30px 0px 30px"}
-                                ),
-
-                                dbc.Col(
-                                    [
-                                        html.H5(id="anti_social"),
-                                        html.H5(id="bike_theft"),
-                                        html.H5(id="burglary"),
-                                        html.H5(id="damage_arson"),
-                                        html.H5(id="drugs"),
-                                        html.H5(id="other_crime"),
-                                        html.H5(id="other_theft"),
-                                        html.H5(id="possession_weapons"),
-                                        html.H5(id="public_order"),
-                                        html.H5(id="robbery"),
-                                        html.H5(id="shoplifting"),
-                                        html.H5(id="theft_person"),
-                                        html.H5(id="vehicle_crime"),
-                                        html.H5(id="violence_sexual")
-                                    ],
-                                    className="font-weight-bold text-right",
-                                    style={"padding": "0px 30px 0px 30px"}
-                                )
-                            ]
-                        )
-                    ], style={"background": "whitesmoke"}
-                )
-            ], style={"padding": "0px 20px 0px 20px"}
         ),
 
         html.Br(), html.Br(),
@@ -202,6 +139,102 @@ app.layout = html.Div(
 
         html.Br(),
 
+html.Div(
+            [
+                html.Div(
+                    [
+                        html.Br(),
+
+                        dbc.Row(
+                            [
+                                html.Button(
+                                    html.Img(src="data:image/png;base64,{}".format(image_house.decode())),
+                                    id="burglary_butt", n_clicks=0, className="btn col-4",
+                                ),
+
+                                html.Button(
+                                    html.Img(src="data:image/png;base64,{}".format(image_car.decode())),
+                                    id="car_butt", n_clicks=0, className="btn col-4",
+                                ),
+
+                                html.Button(
+                                    html.Img(src="data:image/png;base64,{}".format(image_robbery.decode())),
+                                    id="robbery_butt", n_clicks=0, className="btn col-4",
+                                )
+                            ], style={"padding": "0px 30px 0px 30px"}
+                        ),
+
+                        dbc.Row(
+                            [
+                                html.Div(
+                                    html.P("BURGLARY"),
+                                    id="burglary_text",
+                                    className="col-4"
+                                ),
+
+                                html.Div(
+                                    html.P("CAR CRIME"),
+                                    id="car_text",
+                                    className="col-4"
+                                ),
+
+                                html.Div(
+                                    html.P("ROBBERY"),
+                                    id="robbery_text",
+                                    className="col-4"
+                                ),
+                            ], style={"padding": "0px 30px 0px 30px", "textAlign": "center"}
+                        ),
+
+                        html.Br(),
+
+                        dbc.Row(
+                            [
+                                html.Button(
+                                    html.Img(src="data:image/png;base64,{}".format(image_violence.decode())),
+                                    id="violent_butt", n_clicks=0, className="btn col-4",
+                                ),
+
+                                html.Button(
+                                    html.Img(src="data:image/png;base64,{}".format(image_theft.decode())),
+                                    id="theft_butt", n_clicks=0, className="btn col-4",
+                                ),
+
+                                html.Button(
+                                    html.Img(src="data:image/png;base64,{}".format(image_others.decode())),
+                                    id="others_butt", n_clicks=0, className="btn col-4",
+                                ),
+                            ], style={"padding": "0px 30px 0px 30px"}
+                        ),
+
+                        dbc.Row(
+                            [
+                                html.Div(
+                                    html.P("VIOLENT CRIME"),
+                                    id="violent_text",
+                                    className="col-4"
+                                ),
+
+                                html.Div(
+                                    html.P("THEFT"),
+                                    id="theft_text",
+                                    className="col-4"
+                                ),
+
+                                html.Div(
+                                    html.P("OTHER CRIME"),
+                                    id="others_text",
+                                    className="col-4"
+                                )
+                            ], style={"padding": "0px 30px 0px 30px", "textAlign": "center"}
+                        ),
+                    ]
+                )
+            ], style={"padding": "0px 20px 0px 20px"}
+        ),
+
+        html.Br(),
+
         html.Div(
             dcc.Loading(
                 dcc.Graph(
@@ -243,29 +276,27 @@ CALLBACK FOR SUMMARY BOX & MAP
 
 @app.callback(
     [
-        Output("anti_social", "children"),
-        Output("bike_theft", "children"),
-        Output("burglary", "children"),
-        Output("damage_arson", "children"),
-        Output("drugs", "children"),
-        Output("other_crime", "children"),
-        Output("other_theft", "children"),
-        Output("possession_weapons", "children"),
-        Output("public_order", "children"),
-        Output("robbery", "children"),
-        Output("shoplifting", "children"),
-        Output("theft_person", "children"),
-        Output("vehicle_crime", "children"),
-        Output("violence_sexual", "children"),
         Output("crime_map", "figure"),
-        # Output("datatable", "data")
+        Output("burglary_text", "className"),
+        Output("car_text", "className"),
+        Output("robbery_text", "className"),
+        Output("violent_text", "className"),
+        Output("theft_text", "className"),
+        Output("others_text", "className"),
     ],
+
     [
         Input("msoa_drop", "value"),
-        Input("crime_type", "value")
+        Input("burglary_butt", "n_clicks"),
+        Input("car_butt", "n_clicks"),
+        Input("robbery_butt", "n_clicks"),
+        Input("violent_butt", "n_clicks"),
+        Input("theft_butt", "n_clicks"),
+        Input("others_butt", "n_clicks"),
     ]
 )
-def return_summary(selected_area, selected_crime_type):
+def return_summary(selected_area, selected_burglary, selected_car_crime, selected_robbery, selected_violent_crime,
+                   selected_theft, selected_other_crime):
     df1 = df.copy()
 
     '''
@@ -278,33 +309,57 @@ def return_summary(selected_area, selected_crime_type):
     else:
         df1 = df1[df1["MSOA"].isin(selected_area)]
 
-    if selected_crime_type is None or selected_crime_type == []:
-        pass
-    else:
-        df1 = df1[df1["Crime type"].isin(selected_crime_type)]
+    lat_mean_saved = pd.to_numeric(df1["Latitude"]).mean()
+    lon_mean_saved = pd.to_numeric(df1["Longitude"]).mean()
 
-    anti_social = format(int(df1[df1["Crime type"] == "Anti-social behaviour"].shape[0]), ",d")
-    bike_theft = format(int(df1[df1["Crime type"] == "Bicycle theft"].shape[0]), ",d")
-    burglary = format(int(df1[df1["Crime type"] == "Burglary"].shape[0]), ",d")
-    damage_arson = format(int(df1[df1["Crime type"] == "Criminal damage and arson"].shape[0]), ",d")
-    drugs = format(int(df1[df1["Crime type"] == "Drugs"].shape[0]), ",d")
-    other_crime = format(int(df1[df1["Crime type"] == "Other crime"].shape[0]), ",d")
-    other_theft = format(int(df1[df1["Crime type"] == "Other theft"].shape[0]), ",d")
-    possession_weapons = format(int(df1[df1["Crime type"] == "Possession of weapons"].shape[0]), ",d")
-    public_order = format(int(df1[df1["Crime type"] == "Public order"].shape[0]), ",d")
-    robbery = format(int(df1[df1["Crime type"] == "Robbery"].shape[0]), ",d")
-    shoplifting = format(int(df1[df1["Crime type"] == "Shoplifting"].shape[0]), ",d")
-    theft_person = format(int(df1[df1["Crime type"] == "Theft from the person"].shape[0]), ",d")
-    vehicle_crime = format(int(df1[df1["Crime type"] == "Vehicle crime"].shape[0]), ",d")
-    violence_sexual = format(int(df1[df1["Crime type"] == "Violence and sexual offences"].shape[0]), ",d")
+    crime_type = []
+    burglary_class = car_class = robbery_class = violent_class = theft_class = others_class = "col-4"
+
+    if (selected_burglary % 2) == 1:
+        crime_type.append("Burglary")
+        burglary_class = "col-4 font-weight-bold text-success"
+
+    if (selected_car_crime % 2) == 1:
+        crime_type.append("Vehicle crime")
+        car_class = "col-4 font-weight-bold text-success"
+
+    if (selected_robbery % 2) == 1:
+        crime_type.append("Robbery")
+        robbery_class = "col-4 font-weight-bold text-success"
+
+    if (selected_violent_crime % 2) == 1:
+        crime_type.append("Violence and sexual offences")
+        violent_class = "col-4 font-weight-bold text-success"
+
+    if (selected_theft % 2) == 1:
+        crime_type.append("Bicycle theft")
+        crime_type.append("Other theft")
+        crime_type.append("Shoplifting")
+        crime_type.append("Theft from the person")
+        theft_class = "col-4 font-weight-bold text-success"
+
+    if (selected_other_crime % 2) == 1:
+        crime_type.append("Anti-social behaviour")
+        crime_type.append("Criminal damage and arson")
+        crime_type.append("Drugs")
+        crime_type.append("Possession of weapons")
+        others_class = "col-4 font-weight-bold text-success"
+
+    if crime_type:
+        df1 = df1[df1["Crime type"].isin(crime_type)]
 
     '''
     ----------------
     MAP WITH MARKERS
     ----------------
     '''
-    lat_mean = pd.to_numeric(df1["Latitude"]).mean()
-    lon_mean = pd.to_numeric(df1["Longitude"]).mean()
+
+    if df1.empty:
+        lat_mean = lat_mean_saved
+        lon_mean = lon_mean_saved
+    else:
+        lat_mean = pd.to_numeric(df1["Latitude"]).mean()
+        lon_mean = pd.to_numeric(df1["Longitude"]).mean()
 
     df1.loc[(pd.isna(df1["Last outcome category"])), "Last outcome category"] = ""
 
@@ -341,8 +396,8 @@ def return_summary(selected_area, selected_crime_type):
             accesstoken=mapbox_access_token,
             bearing=0,
             center=dict(
-                lat=lat_mean,  # 53.3568326,
-                lon=lon_mean  # -1.5198966
+                lat=lat_mean,
+                lon=lon_mean
             ),
             pitch=0,
             zoom=12,
@@ -356,10 +411,7 @@ def return_summary(selected_area, selected_crime_type):
         margin=dict(t=0, b=0, l=0, r=0)
     )
 
-    return anti_social, bike_theft, burglary, damage_arson, drugs, other_crime, other_theft, possession_weapons, \
-           public_order, robbery, shoplifting, theft_person, vehicle_crime, violence_sexual, \
-           fig  # , \
-    # df1.to_dict("records")
+    return fig, burglary_class, car_class, robbery_class, violent_class, theft_class, others_class,
 
 
 '''
