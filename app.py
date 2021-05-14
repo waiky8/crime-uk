@@ -173,7 +173,7 @@ html.Div(
                                 ),
 
                                 html.Div(
-                                    html.P("CAR CRIME"),
+                                    html.P("VEHICLE CRIME"),
                                     id="car_text",
                                     className="col-4"
                                 ),
@@ -317,33 +317,33 @@ def return_summary(selected_area, selected_burglary, selected_car_crime, selecte
 
     if (selected_burglary % 2) == 1:
         crime_type.append("Burglary")
-        burglary_class = "col-4 font-weight-bold text-success"
+        burglary_class = "col-4 font-weight-bold text-danger"
 
     if (selected_car_crime % 2) == 1:
         crime_type.append("Vehicle crime")
-        car_class = "col-4 font-weight-bold text-success"
+        car_class = "col-4 font-weight-bold text-danger"
 
     if (selected_robbery % 2) == 1:
         crime_type.append("Robbery")
-        robbery_class = "col-4 font-weight-bold text-success"
+        robbery_class = "col-4 font-weight-bold text-danger"
 
     if (selected_violent_crime % 2) == 1:
         crime_type.append("Violence and sexual offences")
-        violent_class = "col-4 font-weight-bold text-success"
+        violent_class = "col-4 font-weight-bold text-danger"
 
     if (selected_theft % 2) == 1:
         crime_type.append("Bicycle theft")
         crime_type.append("Other theft")
         crime_type.append("Shoplifting")
         crime_type.append("Theft from the person")
-        theft_class = "col-4 font-weight-bold text-success"
+        theft_class = "col-4 font-weight-bold text-primary"
 
     if (selected_other_crime % 2) == 1:
         crime_type.append("Anti-social behaviour")
         crime_type.append("Criminal damage and arson")
         crime_type.append("Drugs")
         crime_type.append("Possession of weapons")
-        others_class = "col-4 font-weight-bold text-success"
+        others_class = "col-4 font-weight-bold text-primary"
 
     if crime_type:
         df1 = df1[df1["Crime type"].isin(crime_type)]
