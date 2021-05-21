@@ -20,15 +20,15 @@ def main():
     start_time = time.time()
 
     for f in crime_files:
-        print('*** ', f)
         df = pd.read_csv(f)
 
         if {'MSOA'}.issubset(df.columns):
             continue
 
+        tot_rows = df.shape[0]
         msoa = []
 
-        for r in range(0, len(df)):
+        for n, r in enumerate(range(0, len(df)), start=1):
 
             try:
                 lsoa = df['LSOA name'][r]
@@ -41,13 +41,11 @@ def main():
                 msoa.append(m)
                 print(e)
 
-            print(r, lsoa, '>', m)
+            elapsed_time = time.time() - start_time
+            print(datetime.timedelta(seconds=elapsed_time), ":", f, "[", n, " /", tot_rows, "]", lsoa, '>', m)
 
         df['MSOA'] = msoa
         df.to_csv(f, index=False, encoding='utf-8')
-
-    elapsed_time = time.time() - start_time
-    print('\n', datetime.timedelta(seconds=elapsed_time))
 
 
 def get_msoa(lsoa):

@@ -19,15 +19,15 @@ def main():
     start_time = time.time()
 
     for f in crime_files:
-        print('*** ', f)
         df = pd.read_csv(f)
 
         if {'COLOUR'}.issubset(df.columns):
             df.drop('COLOUR', inplace=True, axis=1)
 
+        tot_rows = df.shape[0]
         colour = []
 
-        for r in range(0, len(df)):
+        for n, r in enumerate(range(0, len(df)), start=1):
 
             ctype = df['Crime type'][r]
 
@@ -38,13 +38,11 @@ def main():
 
             colour.append(c)
 
-            print(r, ctype, '>', c)
+            elapsed_time = time.time() - start_time
+            print(datetime.timedelta(seconds=elapsed_time), ":", f, "[", n, " / ", tot_rows, "]", ctype, '>', c)
 
         df['COLOUR'] = colour
         df.to_csv(f, index=False, encoding='utf-8')
-
-    elapsed_time = time.time() - start_time
-    print('\n', datetime.timedelta(seconds=elapsed_time))
 
 
 if __name__ == '__main__':
